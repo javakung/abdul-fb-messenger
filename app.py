@@ -8,6 +8,11 @@ from flask import Flask, request
 app = Flask(__name__)
 
 
+global BOT_ID
+global BOT_ACCESS_TOKEN
+global PAGE_ACCESS_TOKEN
+global VERIFY_TOKEN
+
 BOT_ID=""
 BOT_ACCESS_TOKEN=""
 PAGE_ACCESS_TOKEN=""
