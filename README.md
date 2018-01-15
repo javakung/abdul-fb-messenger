@@ -1,4 +1,17 @@
-# Facebook Messenger Bot
-This is a simple python template that uses Flask to build a webhook for Facebook's Messenger Bot API.
+# ABDUL as Facebook Messenger Bot
 
-Read more in my [tutorial that uses this repository](https://blog.hartleybrody.com/fb-messenger-bot/)
+Setting
+- Create Heroku App with Python buildpack
+- Config Variables 
+	BOT_ID
+	BOT_ACCESS_TOKEN
+	PAGE_ACCESS_TOKEN (from your Facebook Application)
+	VERIFY_TOKEN (from your Facebook Application)
+
+
+Deploy code to Heroku without edit anything 
+$ heroku login
+$ git init
+$ heroku git:remote -a <myappname>
+$ git add .
+$ git commit -m "Initial commit"
