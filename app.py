@@ -73,12 +73,7 @@ def webhook():
                         except Exception, e:
                             log("there are some errors")
 
-
                         ans = ans.encode('utf8')
-
-                        if(len(ans)>1000):
-                            ans = ans[:999]
-
                         send_message(sender_id, ans)
 
                 if messaging_event.get("delivery"):  # delivery confirmation
