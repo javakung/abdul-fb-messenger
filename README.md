@@ -15,3 +15,4 @@ Deploy to Heroku without edit anything
 - $ heroku git:remote -a <myappname>
 - $ git add .
 - $ git commit -m "Initial commit"
+- $ git push heroku master
