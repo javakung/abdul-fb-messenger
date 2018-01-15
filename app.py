@@ -1,26 +1,37 @@
 import os
 import sys
 import json
+
 import requests
 from flask import Flask, request
 
 app = Flask(__name__)
 
 
+BOT_ID=""
+BOT_ACCESS_TOKEN=""
+PAGE_ACCESS_TOKEN=""
+VERIFY_TOKEN=""
+
 @app.route('/', methods=['GET'])
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
     # the 'hub.challenge' value it receives in the query arguments
     if request.args.get("hub.mode") == "subscribe" and request.args.get("hub.challenge"):
-        if not request.args.get("hub.verify_token") == os.environ["VERIFY_TOKEN"]:
+        if not request.args.get("hub.verify_token") == VERIFY_TOKEN:
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
 
     return "Hello world", 200
 
 
+
+
+
 @app.route('/', methods=['POST'])
 def webhook():
+
+    # endpoint for processing incoming messaging events
 
     data = request.get_json()
 
@@ -42,19 +53,21 @@ def webhook():
                         log(e)
 
                     if(message_text!=""):
-
                         url4 = "http://abdul.in.th/abdul-api/askme"
                         frm = "fb-%s" % sender_id
-                        payload ={"b":os.environ["BOT_ID"],"f":frm,"t":message_text,"k":os.environ["BOT_ACCESS_TOKEN"],"p":os.environ["PAGE_ACCESS_TOKEN"],"l":""}
+                        payload ={"b":BOT_ID,"f":frm,"t":message_text,"k":BOT_ACCESS_TOKEN,"p":PAGE_ACCESS_TOKEN,"l":""}
 
                         ans = ""
                         try:
                             response = requests.post(url4,data=payload)
                             data = json.loads(response.text)
+
                             xans = data['answer'][0]['content']
                             ans = "%s" % xans
+
                         except Exception, e:
                             log("there are some errors")
+
 
                         ans = ans.encode('utf8')
 
@@ -78,7 +91,7 @@ def webhook():
 def send_message(recipient_id, message_text):
 
     params = {
-        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
+        "access_token": PAGE_ACCESS_TOKEN
     }
     headers = {
         "Content-Type": "application/json"
