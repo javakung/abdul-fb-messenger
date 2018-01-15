@@ -26,7 +26,6 @@ def webhook():
     # endpoint for processing incoming messaging events
 
     data = request.get_json()
-    log(data)  # you may not want to log every incoming message in production, but it's good for testing
 
     if data["object"] == "page":
 
@@ -44,20 +43,18 @@ def webhook():
                         message_text = messaging_event["message"]["text"]  # the message's text
                     except Exception, e:
                         log(e)
-                    #log(message_text)
 
                     if(message_text!=""):
 
                         url4 = "http://abdul.in.th/abdul-api/askme"
                         frm = "fb-%s" % sender_id
-                        payload ={"b":os.environ["BOT_ID"],"f":frm,"t":message_text,"k":os.environ["PAGE_ACCESS_TOKEN"],"l":""}
+                        payload ={"b":os.environ["BOT_ID"],"f":frm,"t":message_text,"k":os.environ["BOT_ACCESS_TOKEN"],"p":os.environ["PAGE_ACCESS_TOKEN"],"l":""}
 
 
                         ans = ""
                         try:
                             response = requests.post(url4,data=payload)
                             data = json.loads(response.text)
-
                             xans = data['answer'][0]['content']
                             ans = "%s" % xans
 
@@ -70,14 +67,7 @@ def webhook():
                         if(len(ans)>1000):
                             ans = ans[:999]
 
-
                         send_message(sender_id, ans)
-
-
-
-
-
-
 
 
                 if messaging_event.get("delivery"):  # delivery confirmation
@@ -93,8 +83,6 @@ def webhook():
 
 
 def send_message(recipient_id, message_text):
-
-    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
 
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
