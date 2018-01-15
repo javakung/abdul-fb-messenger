@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-
 import requests
 from flask import Flask, request
 
@@ -22,8 +21,6 @@ def verify():
 
 @app.route('/', methods=['POST'])
 def webhook():
-
-    # endpoint for processing incoming messaging events
 
     data = request.get_json()
 
@@ -50,17 +47,14 @@ def webhook():
                         frm = "fb-%s" % sender_id
                         payload ={"b":os.environ["BOT_ID"],"f":frm,"t":message_text,"k":os.environ["BOT_ACCESS_TOKEN"],"p":os.environ["PAGE_ACCESS_TOKEN"],"l":""}
 
-
                         ans = ""
                         try:
                             response = requests.post(url4,data=payload)
                             data = json.loads(response.text)
                             xans = data['answer'][0]['content']
                             ans = "%s" % xans
-
                         except Exception, e:
                             log("there are some errors")
-
 
                         ans = ans.encode('utf8')
 
@@ -68,7 +62,6 @@ def webhook():
                             ans = ans[:999]
 
                         send_message(sender_id, ans)
-
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
