@@ -1,6 +1,6 @@
 # ABDUL as Facebook Messenger Bot
 
-Setting at https://dashboard.heroku.com/apps/<myappname>/settings
+Setting at https://dashboard.heroku.com/apps/[myappname]/settings
 - Create Heroku App with Python buildpack
 
 Config Variables 
@@ -12,7 +12,7 @@ Config Variables
 Deploy
 - $ heroku login
 - $ git init
-- $ heroku git:remote -a <myappname>
+- $ heroku git:remote -a [myappname]
 - $ git add .
 - $ git commit -m "Initial commit"
 - $ git push heroku master
