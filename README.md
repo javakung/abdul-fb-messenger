@@ -1,11 +1,11 @@
 # ABDUL as Facebook Messenger Bot
 
 Setting at https://dashboard.heroku.com/apps/[myappname]/settings
-- Create Heroku App with Python buildpack
+- Create Heroku App with "Python buildpack"
 
 Config Variables 
-- BOT_ID
-- BOT_ACCESS_TOKEN
+- BOT_ID (from https://abdul.in.th/abdul/)
+- BOT_ACCESS_TOKEN (***)
 - PAGE_ACCESS_TOKEN (from your Facebook Application)
 - VERIFY_TOKEN (from your Facebook Application)
 
