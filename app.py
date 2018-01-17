@@ -9,6 +9,8 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+class Button(dict):
+    pass
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -50,25 +52,7 @@ def webhook():
                         log(e)
 
                     if(message_text!=""):
-                        url4 = "http://abdul.in.th/abdul-api/askme"
-                        frm = "fb-%s" % sender_id
-                        payload ={"b":BOT_ID,"f":frm,"t":message_text,"k":BOT_ACCESS_TOKEN,"p":PAGE_ACCESS_TOKEN,"l":""}
-
-                        ans = ""
-                        try:
-                            response = requests.post(url4,data=payload)
-                            data = json.loads(response.text)
-
-                            xans = data['answer'][0]['content']
-                            ans = "%s" % xans
-
-                        except Exception, e:
-                            log("there are some errors")
-
-
-                        ans = ans.encode('utf8')
-
-
+                        ans = ask_abdul(sender_id,message_text)
                         send_message(sender_id, ans)
 
                 if messaging_event.get("delivery"):  # delivery confirmation
@@ -78,7 +62,22 @@ def webhook():
                     pass
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
-                    pass
+
+                    sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
+                    recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
+
+                    message_text = ""
+
+                    try:
+                        message_text = messaging_event["postback"]["payload"]  # the message's text
+                    except Exception, e:
+                        log(e)
+
+                    ans = ask_abdul(sender_id,message_text)
+                    send_message(sender_id, ans)
+
+
+
 
     return "ok", 200
 
@@ -118,6 +117,7 @@ def send_message(recipient_id, message_text):
         mtext=message_text.replace("___BUTTON___","")
         mtext = mtext.strip()
         data = send_button_message(recipient_id,mtext)
+
     else:
         data = json.dumps({
             "recipient": {
@@ -170,6 +170,29 @@ def send_button_message(recipient_id,message_text):
     })
 
     return data
+
+def ask_abdul(sender_id,message_text):
+    if(message_text!=""):
+        url4 = "http://abdul.in.th/abdul-api/askme"
+        frm = "fb-%s" % sender_id
+        payload ={"b":BOT_ID,"f":frm,"t":message_text,"k":BOT_ACCESS_TOKEN,"p":PAGE_ACCESS_TOKEN,"l":""}
+
+        ans = ""
+        try:
+            response = requests.post(url4,data=payload)
+            data = json.loads(response.text)
+
+            xans = data['answer'][0]['content']
+            ans = "%s" % xans
+
+        except Exception, e:
+            log("there are some errors")
+
+        ans = ans.encode('utf8')
+        return ans
+    else:
+        return ""
+
 
 def log(message):  # simple wrapper for logging to stdout on heroku
     sys.stdout.flush()
