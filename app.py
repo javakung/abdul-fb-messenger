@@ -1,22 +1,14 @@
 import os
 import sys
 import json
-
 import requests
+
+from config import BOT_ID,BOT_ACCESS_TOKEN,PAGE_ACCESS_TOKEN,VERIFY_TOKEN
+
 from flask import Flask, request
 
 app = Flask(__name__)
 
-
-global BOT_ID
-global BOT_ACCESS_TOKEN
-global PAGE_ACCESS_TOKEN
-global VERIFY_TOKEN
-
-BOT_ID=""
-BOT_ACCESS_TOKEN=""
-PAGE_ACCESS_TOKEN=""
-VERIFY_TOKEN=""
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -73,7 +65,10 @@ def webhook():
                         except Exception, e:
                             log("there are some errors")
 
+
                         ans = ans.encode('utf8')
+
+
                         send_message(sender_id, ans)
 
                 if messaging_event.get("delivery"):  # delivery confirmation
@@ -96,18 +91,45 @@ def send_message(recipient_id, message_text):
     headers = {
         "Content-Type": "application/json"
     }
-    data = json.dumps({
-        "recipient": {
-            "id": recipient_id
-        },
-        "message": {
-            "text": message_text
-        }
-    })
+
+    if(message_text.startswith("___SILENT___")):
+        pass
+
+    elif(message_text.startswith("___STICKER___")):
+        pass
+
+    elif(message_text.startswith("___IMG___")):
+        mtext=message_text.replace("___IMG___","")
+        mtext = mtext.strip()
+        data = json.dumps({
+            "recipient": {
+                "id": recipient_id
+            },
+            "message":{
+                "attachment":{
+                    "type":"image",
+                    "payload":{
+                        "url": mtext
+                    }
+                }
+            }
+        })
+    else:
+        data = json.dumps({
+            "recipient": {
+                "id": recipient_id
+            },
+            "message": {
+                "text": message_text
+            }
+        })
+    
+
     r = requests.post("https://graph.facebook.com/v2.11/me/messages", params=params, headers=headers, data=data)
+
     if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
+        print(r.status_code)
+        print(r.text)
 
 
 def log(message):  # simple wrapper for logging to stdout on heroku
