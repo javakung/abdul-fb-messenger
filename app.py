@@ -114,6 +114,10 @@ def send_message(recipient_id, message_text):
                 }
             }
         })
+    elif(message_text.startswith("___BUTTON___")):
+        mtext=message_text.replace("___BUTTON___","")
+        mtext = mtext.strip()
+        data = send_button_message(recipient_id,mtext)
     else:
         data = json.dumps({
             "recipient": {
@@ -131,6 +135,41 @@ def send_message(recipient_id, message_text):
         print(r.status_code)
         print(r.text)
 
+def send_button_message(recipient_id,message_text):
+
+    buttons = []
+    ttext,mtext = message_text.split("==>")
+    if ',' in mtext:
+        for bt in mtext.split(","):
+            if '|' in bt:
+                t,u = bt.split('|')
+                button = Button(title=t, type='web_url', url=u)
+                buttons.append(button)
+            else:
+                button = Button(title=bt, type='postback', payload=bt)
+                buttons.append(button)
+    else:
+        button = Button(title=mtext, type='postback', payload=mtext)
+        buttons.append(button)
+
+
+    data = json.dumps({
+            "recipient": {
+                "id": recipient_id
+            },
+            "message":{
+                "attachment":{
+                    "type":"template",
+                    "payload":{
+                        "template_type": "button",
+                        "text":ttext,
+                        "buttons":buttons
+                    }
+                }
+            }
+    })
+
+    return data
 
 def log(message):  # simple wrapper for logging to stdout on heroku
     sys.stdout.flush()
