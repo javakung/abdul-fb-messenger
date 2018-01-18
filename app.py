@@ -128,12 +128,12 @@ def send_message(recipient_id, message_text):
             }
         })
     
+    if data :
+        r = requests.post("https://graph.facebook.com/v2.11/me/messages", params=params, headers=headers, data=data)
 
-    r = requests.post("https://graph.facebook.com/v2.11/me/messages", params=params, headers=headers, data=data)
-
-    if r.status_code != 200:
-        print(r.status_code)
-        print(r.text)
+        if r.status_code != 200:
+            print(r.status_code)
+            print(r.text)
 
 def send_button_message(recipient_id,message_text):
 
@@ -191,7 +191,7 @@ def ask_abdul(sender_id,message_text):
         ans = ans.encode('utf8')
         return ans
     else:
-        return ""
+        return "no answer"
 
 
 def log(message):  # simple wrapper for logging to stdout on heroku
