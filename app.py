@@ -127,7 +127,7 @@ def send_message(recipient_id, message_text):
                 "text": message_text
             }
         })
-    
+
     if data :
         r = requests.post("https://graph.facebook.com/v2.11/me/messages", params=params, headers=headers, data=data)
 
@@ -191,7 +191,7 @@ def ask_abdul(sender_id,message_text):
         ans = ans.encode('utf8')
         return ans
     else:
-        return "no answer"
+        return ":)"
 
 
 def log(message):  # simple wrapper for logging to stdout on heroku
